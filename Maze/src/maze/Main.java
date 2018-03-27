@@ -16,6 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("DDvory je čuráááák");
+        System.out.println("Mustul je kokot");
     }
     
 }
