@@ -33,4 +33,23 @@ public class XYPair {
         return x;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof XYPair)) {
+            return false;
+        }
+        
+        XYPair cmp = (XYPair) obj;
+        return cmp.x == x && cmp.y == y;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + this.x;
+        hash = 41 * hash + this.y;
+        return hash;
+    }
+
+    
 }
