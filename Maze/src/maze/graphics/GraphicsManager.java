@@ -28,6 +28,7 @@ public class GraphicsManager {
 
     private static final int TILE_SIZE = 25;
     private static final float FOV = 90;
+    private static final float RENDER_DISTANCE = 300;
 
     private static Map map;
 
@@ -38,16 +39,16 @@ public class GraphicsManager {
         Dimension size = new Dimension(20, 20);
 
         public TestMap() {
-            types[0] =  new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-            types[1] =  new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-            types[2] =  new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-            types[3] =  new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-            types[4] =  new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-            types[5] =  new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-            types[6] =  new int[]{1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1};
-            types[7] =  new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
-            types[8] =  new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
-            types[9] =  new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
+            types[0] = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+            types[1] = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+            types[2] = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+            types[3] = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+            types[4] = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+            types[5] = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+            types[6] = new int[]{1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1};
+            types[7] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
+            types[8] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
+            types[9] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
             types[10] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
             types[11] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
             types[12] = new int[]{1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1};
@@ -139,53 +140,18 @@ public class GraphicsManager {
         while (true) {
 
             double x, y;
+            Position vec;
             switch (direction) {
                 case 38:
-                    y = Math.sin(Math.toRadians(pos.getYaw() % 90));
-                    x = Math.cos(Math.toRadians(pos.getYaw() % 90));
-                    if (pos.getYaw() >= 90 && pos.getYaw() < 180) {
-                        x *= -1;
+                    vec = getVectorInAngle(pos.getYaw(), 1);
 
-                    } else if (pos.getYaw() >= 180 && pos.getYaw() < 270) {
-                        y = y + x;
-                        x = y - x;
-                        y = y - x;
-
-                    } else if (pos.getYaw() >= 270) {
-                        y *= -1;
-                    } else if (pos.getYaw() < 90) {
-                        y = y + x;
-                        x = y - x;
-                        y = y - x;
-                        x *= -1;
-                        y *= -1;
-                    }
-
-                    pos.setX(pos.getX() + x);
-                    pos.setY(pos.getY() + y);
+                    pos.setX(pos.getX() + vec.getX());
+                    pos.setY(pos.getY() + vec.getY());
                     break;
                 case 40:
-                    y = Math.sin(Math.toRadians(pos.getYaw() % 90)) * -1;
-                    x = Math.cos(Math.toRadians(pos.getYaw() % 90)) * -1;
-                    if (pos.getYaw() >= 90 && pos.getYaw() < 180) {
-                        x *= -1;
-
-                    } else if (pos.getYaw() >= 180 && pos.getYaw() < 270) {
-                        y = y + x;
-                        x = y - x;
-                        y = y - x;
-
-                    } else if (pos.getYaw() >= 270) {
-                        y *= -1;
-                    } else if (pos.getYaw() < 90) {
-                        y = y + x;
-                        x = y - x;
-                        y = y - x;
-                        x *= -1;
-                        y *= -1;
-                    }
-                    pos.setX(pos.getX() + x);
-                    pos.setY(pos.getY() + y);
+                    vec = getVectorInAngle(pos.getYaw(), 1);
+                    pos.setX(pos.getX() - vec.getX());
+                    pos.setY(pos.getY() - vec.getY());
                     break;
                 case 37:
                     pos.setYaw((pos.getYaw() + 0.5) % 360);
@@ -234,7 +200,7 @@ public class GraphicsManager {
             fps++;
             if (lastFPS + 1000 < System.currentTimeMillis()) {
                 lastFPS = System.currentTimeMillis();
-                System.out.println("FPS: " + fps + " BLOCKED: " + (blocked/fps));
+                System.out.println("FPS: " + fps + " BLOCKED: " + (blocked / fps));
                 fps = blocked = 0;
             }
 
@@ -246,18 +212,84 @@ public class GraphicsManager {
         }
     }
 
+    private static Position getVectorInAngle(double vector, double distance) {
+        double y = Math.sin(Math.toRadians(vector % 90)) * distance;
+        double x = Math.cos(Math.toRadians(vector % 90)) * distance;
+        if (vector >= 90 && vector < 180) {
+            x *= -1;
+
+        } else if (vector >= 180 && vector < 270) {
+            y = y + x;
+            x = y - x;
+            y = y - x;
+
+        } else if (vector >= 270) {
+            y *= -1;
+        } else if (vector < 90) {
+            y = y + x;
+            x = y - x;
+            y = y - x;
+            x *= -1;
+            y *= -1;
+        }
+
+        return new Position(x, y);
+    }
+
     private static HashMap<Double, ArrayList<XYPair>> selectVisibleObjects(Location loc) {
         HashMap<Double, ArrayList<XYPair>> ret = new HashMap<>();
         ArrayList<XYPair> pairs = new ArrayList<>();
-        List<XYPair> walls = map.getWalls();
+        List<XYPair> walls = new ArrayList<>();
+
+        double one = 2 * Math.PI * RENDER_DISTANCE / 360;
+        double obvod = one * FOV;
+        for (double i = 0; i <= (obvod + (TILE_SIZE / 2)) / one; i += 1.0 / one) {
+            Position vect = getVectorInAngle(loc.getYaw() - (FOV / 2) + i, RENDER_DISTANCE);
+            Position end = new Position(vect.getX() + loc.getX(), vect.getY() + loc.getY());
+            XYPair tile = getTile(end);
+            if (!walls.contains(tile)) {
+                walls.add(tile);
+            }
+            double dx = vect.getX() * (TILE_SIZE/RENDER_DISTANCE);
+            double dy = vect.getY() * (TILE_SIZE/RENDER_DISTANCE);
+            g.setColor(Color.ORANGE);
+            double x = loc.getX();
+            double y = loc.getY();
+            XYPair last = null;
+            XYPair endTile = getTile(end);
+            while (true) {
+                x += dx;
+                y += dy;
+                XYPair p = getTile(x, y);
+                g.drawRect((int) x, (int) y, 1, 1);
+                if (p.equals(last)) {
+                    continue;
+                }
+                last = p;
+                if (p.equals(endTile)) {
+                    break;
+                }
+
+                if (!walls.contains(p)) {
+                    if (map.getType(p) == 1) {
+                        walls.add(p);
+                    }
+                } else {
+                    //blocked++;
+                }
+
+            }
+
+        }
+
         walls.forEach((wall) -> {
             Position pos = getPos(wall);
             Position pos2 = new Position(pos.getX() + TILE_SIZE, pos.getY());
             Position pos3 = new Position(pos.getX(), pos.getY() + TILE_SIZE);
             Position pos4 = new Position(pos.getX() + TILE_SIZE, pos.getY() + TILE_SIZE);
-            if (canSee(loc, pos, ret,pairs)) {
+            if (canSee(loc, pos, ret, pairs)) {
                 double dist = Math.sqrt(Math.pow(pos.getX() - loc.getX(), 2) + Math.pow(pos.getY() - loc.getY(), 2));
-                if (!pairs.contains(wall)) {
+                if (!pairs.contains(wall) && map.getType(wall) == 1) {
                     if (!ret.containsKey(dist)) {
                         ret.put(dist, new ArrayList<>());
                     }
@@ -267,9 +299,9 @@ public class GraphicsManager {
                     blocked++;
                 }
 
-            } else if (canSee(loc, pos2, ret,pairs)) {
+            } else if (canSee(loc, pos2, ret, pairs)) {
                 double dist = Math.sqrt(Math.pow(pos2.getX() - loc.getX(), 2) + Math.pow(pos2.getY() - loc.getY(), 2));
-                if (!pairs.contains(wall)) {
+                if (!pairs.contains(wall) && map.getType(wall) == 1) {
                     if (!ret.containsKey(dist)) {
                         ret.put(dist, new ArrayList<>());
                     }
@@ -278,9 +310,9 @@ public class GraphicsManager {
                 } else {
                     blocked++;
                 }
-            } else if (canSee(loc, pos3, ret,pairs)) {
+            } else if (canSee(loc, pos3, ret, pairs)) {
                 double dist = Math.sqrt(Math.pow(pos3.getX() - loc.getX(), 2) + Math.pow(pos3.getY() - loc.getY(), 2));
-                if (!pairs.contains(wall)) {
+                if (!pairs.contains(wall) && map.getType(wall) == 1) {
                     if (!ret.containsKey(dist)) {
                         ret.put(dist, new ArrayList<>());
                     }
@@ -289,9 +321,9 @@ public class GraphicsManager {
                 } else {
                     blocked++;
                 }
-            } else if (canSee(loc, pos4, ret,pairs)) {
+            } else if (canSee(loc, pos4, ret, pairs)) {
                 double dist = Math.sqrt(Math.pow(pos4.getX() - loc.getX(), 2) + Math.pow(pos4.getY() - loc.getY(), 2));
-                if (!pairs.contains(wall)) {
+                if (!pairs.contains(wall) && map.getType(wall) == 1) {
                     if (!ret.containsKey(dist)) {
                         ret.put(dist, new ArrayList<>());
                     }
@@ -306,7 +338,7 @@ public class GraphicsManager {
         return ret;
     }
 
-    private static boolean canSee(Location loc, Position pos, HashMap<Double, ArrayList<XYPair>> ret,ArrayList<XYPair> pairs) {
+    private static boolean canSee(Location loc, Position pos, HashMap<Double, ArrayList<XYPair>> ret, ArrayList<XYPair> pairs) {
         double dx = pos.getX() - loc.getX();
         double dy = pos.getY() - loc.getY();
         double angle = Math.toDegrees(Math.atan(Math.abs(dy / dx)));
@@ -384,7 +416,7 @@ public class GraphicsManager {
         return false;
     }
 
-    private static XYPair getTile(Location loc) {
+    private static XYPair getTile(Position loc) {
         return getTile(loc.getX(), loc.getY());
     }
 
